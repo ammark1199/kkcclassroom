@@ -18,7 +18,7 @@ export default function Home() {
                 src="/profileA.jpg"
                 alt="Profile"
                 className="w-full h-full object-cover"
-              />
+ />
             </div>
   
             {/* Fun Fact Text */}
