@@ -1,9 +1,29 @@
 "use client";
-
 import { useState } from "react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleResetPassword = async () => {
+    setMessage("");
+    setError("");
+
+    if (!email) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setMessage("Reset link sent! Check your email.");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#F1EFE7" }}>
@@ -22,13 +42,17 @@ export default function ResetPasswordPage() {
         </div>
 
         <button
-          className="w-full py-2 rounded-md mb-4"
+          className="w-full py-2 rounded-md mb-2 transition"
           style={{ backgroundColor: "#FF637A", color: "#FFFFFF" }}
           onMouseEnter={(e) => e.target.style.backgroundColor = "#FF4E67"}
           onMouseLeave={(e) => e.target.style.backgroundColor = "#FF637A"}
+          onClick={handleResetPassword}
         >
           Send Reset Link
         </button>
+
+        {message && <p className="text-green-600 text-sm text-center mt-2">{message}</p>}
+        {error && <p className="text-red-600 text-sm text-center mt-2">{error}</p>}
 
         <div className="text-center mt-4">
           <p className="text-sm" style={{ color: "#000000" }}>

@@ -17,17 +17,19 @@ export default function LoginPage() {
   const router = useRouter();
   const { currentUser } = useAuth(); // 👈 get current user
 
+  /*
   // 🔒 Redirect if already logged in
   useEffect(() => {
     if (currentUser) {
       router.push("/dashboard");
     }
   }, [currentUser]);
-
+*/
   const handleLogin = async () => {
     setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      router.push("/dashboard"); // 👈 manually push after successful login
       // No need to manually redirect — useEffect will do it
     } catch (err) {
       setError(err.message);
@@ -40,6 +42,7 @@ export default function LoginPage() {
 
   try {
     await signInWithPopup(auth, provider);
+    router.push("/dashboard");
     // Redirect will be handled by useEffect
   } catch (err) {
     setError(err.message);
@@ -126,7 +129,9 @@ export default function LoginPage() {
         <div className="text-center mt-4">
           <p className="text-sm" style={{ color: "#000000" }}>
             Don’t have an account?{" "}
-            <button className="hover:underline" style={{ color: "#FF637A" }}>Sign up</button>
+            <Link href="/signup1" className="hover:underline" style={{ color: "#FF637A" }}>
+              Sign up
+            </Link>
           </p>
         </div>
       </div>
