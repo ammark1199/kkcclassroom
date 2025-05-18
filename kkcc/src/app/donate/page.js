@@ -1,15 +1,45 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 export default function DonatePage() {
+  const router = useRouter();
   const [isMonthly, setIsMonthly] = useState(true);
+  const [selectedAmount, setSelectedAmount] = useState('');
+  const [customAmount, setCustomAmount] = useState('');
+  const [error, setError] = useState('');
 
   const monthlyAmounts = ['CA$17', 'CA$28', 'CA$42', 'CA$70'];
   const oneTimeAmounts = ['CA$25', 'CA$50', 'CA$100', 'CA$250'];
 
-  const handleToggle = (monthlySelected) => setIsMonthly(monthlySelected);
+  const handleToggle = (monthlySelected) => {
+    setIsMonthly(monthlySelected);
+    setSelectedAmount('');
+  };
+
+  const handleCustomAmountChange = (e) => {
+    const value = e.target.value;
+    setCustomAmount(value);
+    setSelectedAmount(''); // Clear preset when typing custom
+    if (value && !/^[0-9]*$/.test(value)) {
+      setError('Please enter a valid number');
+    } else {
+      setError('');
+    }
+  };
+
+  const handleContinue = () => {
+    const amount = selectedAmount || (customAmount ? `CA$${customAmount}` : '');
+    if (!amount || error) {
+      alert('Please select or enter a valid amount.');
+      return;
+    }
+
+    // Redirect to checkout page with query string
+    router.push(`/checkout?amount=${encodeURIComponent(amount)}&type=${isMonthly ? 'monthly' : 'one-time'}`);
+  };
 
   return (
     <div className="min-h-screen flex font-sans bg-[#F1EFE7] text-black">
@@ -18,13 +48,11 @@ export default function DonatePage() {
         <h1 className="text-5xl font-extrabold tracking-tight leading-tight">Support KKC</h1>
 
         {/* Toggle */}
-        <div className="flex bg-white rounded-full w-fit overflow-hidden border border-black shadow-sm text-base font-semibold">
+        <div className="flex bg-white rounded-full w-fit overflow-hidden border border-black shadow text-base font-semibold">
           <button
             onClick={() => handleToggle(false)}
             className={`px-6 py-2 transition-all duration-300 ${
-              !isMonthly
-                ? 'text-white bg-[#FF637A]'
-                : 'text-black hover:bg-[#FFE5E9]'
+              !isMonthly ? 'text-white bg-[#FF637A]' : 'text-black hover:bg-[#FFE5E9]'
             }`}
           >
             One-time
@@ -32,9 +60,7 @@ export default function DonatePage() {
           <button
             onClick={() => handleToggle(true)}
             className={`px-6 py-2 transition-all duration-300 ${
-              isMonthly
-                ? 'text-white bg-[#FF637A]'
-                : 'text-black hover:bg-[#FFE5E9]'
+              isMonthly ? 'text-white bg-[#FF637A]' : 'text-black hover:bg-[#FFE5E9]'
             }`}
           >
             Monthly
@@ -51,7 +77,13 @@ export default function DonatePage() {
           {(isMonthly ? monthlyAmounts : oneTimeAmounts).map((amount) => (
             <button
               key={amount}
-              className="bg-white border border-black px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 hover:bg-[#FFE5E9] hover:border-black"
+              onClick={() => {
+                setSelectedAmount(amount);
+                setCustomAmount('');
+              }}
+              className={`px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 border ${
+                selectedAmount === amount ? 'bg-[#FF637A] text-white border-black' : 'bg-white border-black hover:bg-[#FFE5E9]'
+              }`}
             >
               {amount}
             </button>
@@ -59,24 +91,32 @@ export default function DonatePage() {
         </div>
 
         {/* Other Amount */}
-        <div className="flex items-center gap-2 bg-[#FF637A] border border-black rounded-xl px-4 py-3 w-fit text-white shadow-sm">
-          <span className="text-lg font-semibold border-r border-white pr-2">CAD</span>
-          <input
-            type="text"
-            placeholder="Other"
-            className="px-2 py-1 rounded-md w-24 text-black font-semibold text-lg focus:outline-none"
-          />
-          <span className="text-lg font-semibold pl-1">$</span>
+        <div className="flex flex-col space-y-1">
+          <div className="flex items-center gap-2 bg-[#FF637A] border border-black rounded-xl px-4 py-3 w-fit text-white shadow-sm">
+            <span className="text-lg font-semibold border-r border-white pr-2">CAD</span>
+            <input
+              type="text"
+              placeholder="Other"
+              value={customAmount}
+              onChange={handleCustomAmountChange}
+              className="px-2 py-1 rounded-md w-24 text-black font-semibold text-lg focus:outline-none"
+            />
+            <span className="text-lg font-semibold pl-1">$</span>
+          </div>
+          {error && <span className="text-sm text-red-600 font-medium pl-2">{error}</span>}
         </div>
 
         {/* Continue Button */}
-        <button className="bg-black text-white text-lg px-8 py-3 rounded-xl font-semibold shadow hover:opacity-90 transition-all w-fit">
+        <button
+          onClick={handleContinue}
+          className="bg-black text-white text-lg px-8 py-3 rounded-xl font-semibold shadow hover:opacity-90 transition-all w-fit"
+        >
           Continue
         </button>
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="w-2/5 bg-white bg-opacity-80 backdrop-blur-lg rounded-l-3xl shadow-2xl flex flex-col items-center justify-center px-10 py-20 text-center space-y-6">
+      <div className="w-2/5 bg-white bg-opacity-90 backdrop-blur-xl rounded-l-3xl shadow-2xl flex flex-col items-center justify-center px-10 py-20 text-center space-y-6">
         <div className="w-64 h-80 rounded-3xl overflow-hidden border-4 border-white ring-2 ring-pink-300 shadow-lg">
           <Image
             src="/image (2).png"
