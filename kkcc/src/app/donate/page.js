@@ -11,8 +11,8 @@ export default function DonatePage() {
 
   const router = useRouter();
 
-  const monthlyAmounts = ['CA$17', 'CA$28', 'CA$42', 'CA$70'];
-  const oneTimeAmounts = ['CA$25', 'CA$50', 'CA$100', 'CA$250'];
+  const monthlyAmounts = ['$17', '$28', '$42', '$70'];
+  const oneTimeAmounts = ['$25', '$50', '$100', '$250'];
 
   const handleToggle = (monthlySelected) => {
     setIsMonthly(monthlySelected);
@@ -39,7 +39,7 @@ export default function DonatePage() {
   };
 
   const handleContinue = () => {
-    const amount = selectedAmount || `CA$${customAmount}`;
+    const amount = selectedAmount || `$${customAmount}`;
     const type = isMonthly ? 'monthly' : 'one-time';
     if (!amount || error) return;
     router.push(`/card-details?amount=${amount}&type=${type}`);
@@ -73,7 +73,10 @@ export default function DonatePage() {
 
         {/* Donation Title */}
         <p className="text-xl font-medium">
-          Choose an amount to donate <span className="underline underline-offset-4">{isMonthly ? 'Monthly' : 'One-time'}</span>
+          Choose an amount to donate{' '}
+          <span className="underline underline-offset-4">
+            {isMonthly ? 'Monthly' : 'One-time'}
+          </span>
         </p>
 
         {/* Amount Options */}
@@ -96,7 +99,7 @@ export default function DonatePage() {
         {/* Other Amount */}
         <div className="flex flex-col space-y-1">
           <div className="flex items-center gap-2 bg-[#FF637A] border border-black rounded-xl px-4 py-3 w-fit text-white shadow-sm">
-            <span className="text-lg font-semibold border-r border-white pr-2">CAD</span>
+            <span className="text-lg font-semibold border-r border-white pr-2">USD</span>
             <input
               type="text"
               placeholder="Other"
@@ -112,7 +115,7 @@ export default function DonatePage() {
         {/* Continue Button */}
         <button
           className={`bg-black text-white text-lg px-8 py-3 rounded-xl font-semibold shadow transition-all w-fit ${
-            (!selectedAmount && (!customAmount || error)) ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
+            !selectedAmount && (!customAmount || error) ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
           }`}
           onClick={handleContinue}
           disabled={!selectedAmount && (!customAmount || error)}
