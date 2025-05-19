@@ -120,33 +120,35 @@ export default function QandASection() {
           />
         </div>
 
-        {/* Ask Form */}
-        <div className="max-w-3xl mx-auto mb-10 bg-white p-6 rounded-xl shadow">
-          <textarea
-            placeholder="Ask a new question..."
-            value={newQuestion}
-            onChange={(e) => setNewQuestion(e.target.value)}
-            rows={3}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg resize-none"
-          />
-          <div className="flex justify-between items-center mt-4">
-            <select
-              value={newTag}
-              onChange={(e) => setNewTag(e.target.value)}
-              className="border border-gray-300 rounded px-3 py-2 text-sm"
-            >
-              <option>Consulting</option>
-              <option>Investment Banking</option>
-              <option>Other</option>
-            </select>
-            <button
-              onClick={handleAsk}
-              className="bg-[#FF637A] text-white px-6 py-2 rounded-xl shadow hover:bg-pink-600 transition"
-            >
-              Ask Question
-            </button>
+        {/* Ask Form - Only in 'My Questions' tab */}
+        {activeTab === "my" && (
+          <div className="max-w-3xl mx-auto mb-10 bg-white p-6 rounded-xl shadow">
+            <textarea
+              placeholder="Ask a new question..."
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              rows={3}
+              className="w-full border border-gray-300 px-4 py-2 rounded-lg resize-none"
+            />
+            <div className="flex justify-between items-center mt-4">
+              <select
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm"
+              >
+                <option>Consulting</option>
+                <option>Investment Banking</option>
+                <option>Other</option>
+              </select>
+              <button
+                onClick={handleAsk}
+                className="bg-[#FF637A] text-white px-6 py-2 rounded-xl shadow hover:bg-pink-600 transition"
+              >
+                Ask Question
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Question Feed */}
         <div className="space-y-6">
@@ -182,7 +184,9 @@ export default function QandASection() {
                   <button
                     onClick={() => toggleUpvote(q.id)}
                     className={`px-4 py-1 rounded-full border text-sm ${
-                      q.upvoted ? "bg-green-100 text-green-700 border-green-300" : "bg-white text-gray-700 border-gray-300"
+                      q.upvoted
+                        ? "bg-green-100 text-green-700 border-green-300"
+                        : "bg-white text-gray-700 border-gray-300"
                     }`}
                   >
                     👍 Upvote
